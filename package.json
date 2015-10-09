@@ -1,0 +1,24 @@
+{
+  "name": "final_faser",
+  "version": "3.14.15926",
+  "description": "The best game evaar (or a tribute to the best game evaar)!",
+  "main": "index.html",
+  "scripts": {
+    "test": "node ./test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/finalFaser/jam.git"
+  },
+  "keywords": [
+    "Best",
+    "Game",
+    "Evaar"
+  ],
+  "author": "finalFaser Team",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/finalFaser/jam/issues"
+  },
+  "homepage": "https://github.com/finalFaser/jam#readme"
+}
