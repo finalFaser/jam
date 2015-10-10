@@ -2,18 +2,25 @@
  * Created by jorge.graca on 10/10/2015.
  */
 
-
 var BULLET_SPEED = 500; // pixels/second
 
-var Projectile = function(game, x, y){
-    Phaser.Group.call( this, game );
+var Projectile = function(game, x, y) {
+    Phaser.Group.call(this, game);
 
     this.bullet = this.create(x, y, 'BalaPotassio');//create a Sprite and add it to this(Group)
     this.game.physics.enable(this.bullet, Phaser.Physics.ARCADE);
-    this.bullet.anchor.set(0.5,0.5);
-
+    this.bullet.anchor.set(0.5, 0.5);
     this.bullet.kill();
-};
+
+    this.explosion = this.create(300, 300, 'explosion');
+    this.explosion.anchor.setTo(0.5, 0.5);
+    this.explosion.kill();
+
+    // Add an animation for the explosion that kills the sprite when the
+    // animation is complete
+    this.explosionAnim = this.explosion.animations.add('boom', [0, 1, 2, 3], 40, false);
+    this.explosionAnim.killOnComplete = true;
+}
 
 Projectile.prototype = Object.create(Phaser.Group.prototype);
 
@@ -22,6 +29,12 @@ Projectile.prototype.update = function() {
 };
 
 Projectile.prototype.shootBullet = function(x,y) {
+
+    this.explosion.revive();
+    // Set rotation of the explosion at random for a little variety
+    this.explosion.angle = this.game.rnd.integerInRange(0, 360);
+    // Play the animation
+    this.explosion.animations.play('boom');
 
 
     // Get a dead bullet from the pool
