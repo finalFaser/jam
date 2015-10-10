@@ -1,16 +1,21 @@
 var ProjectilePool = require('..\\common\\ProjectilePool');
 var Explosion = require('..\\common\\Explosion');
+var Beam = require('..\\common\\Beam');
+
 
 // Define constants
-var SHOT_DELAY = 100; // milliseconds (10 bullets/second)
-
+var SHOT_DELAY = 200; // milliseconds (5 bullets/second)
+var LAZER_DELAY = 2000; //ms (0.5/sec)
 
 module.exports = {
     create: function(){
         this.lastBulletShotAt = 0;
+        this.lastLazerShotAt = 0;
+
         this.bulletPool = new ProjectilePool(this.game);
         this.bulletPool2 = new ProjectilePool(this.game);
         this.explosion = new Explosion(this.game, 0, 0);
+        this.beam = this.add.existing(new Beam(this.game));
 
         this._barbarian = this.add.sprite(300, 300, 'barbarian');
         this._barbarian.anchor.set(0.5, 0.5);
@@ -25,17 +30,26 @@ module.exports = {
         this._shift = this.game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
     },
     update: function(){
+
+        //this.beam.update();
+
         // Shoot a bullet
         if (this.game.input.activePointer.isDown) {
             // Enforce a short delay between shots by recording
             // the time that each bullet is shot and testing if
             // the amount of time since the last shot is more than
             // the required delay.
-            if (this.game.time.now - this.lastBulletShotAt < SHOT_DELAY) return;
-            this.lastBulletShotAt = this.game.time.now;
+            if (this.game.time.now - this.lastBulletShotAt > SHOT_DELAY){
+                this.lastBulletShotAt = this.game.time.now;
 
-            this.bulletPool.shoot(0,0);
-            this.bulletPool2.shoot(600,600);
+                this.bulletPool.shoot(this._barbarian.x,this._barbarian.y);
+                this.bulletPool2.shoot(600,600);
+            }
+
+            if (this.game.time.now - this.lastLazerShotAt > LAZER_DELAY) {
+                this.lastLazerShotAt = this.game.time.now;
+                this.beam.shoot(this._barbarian.x,this._barbarian.y);
+            }
         }
         // Check if bullets have collided with the ground
         this.game.physics.arcade.collide(this.bulletPool.bulletPool, this.bulletPool2.bulletPool, function(bullet, bullet2) {
