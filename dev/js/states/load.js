@@ -20,6 +20,7 @@ module.exports = {
 
 
         this.load.image('BalaPotassio', 'assets/bullet.png');//asynchronous
+        game.load.spritesheet('explosion', 'assets/explosion.png', 128, 128);//asynchronous
         this.load.spritesheet('barbarian', 'assets/barbarian.png', 144, 144);//asynchronous
     },
 
