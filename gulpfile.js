@@ -3,7 +3,6 @@
 var gulp        = require('gulp');
 var clean       = require('gulp-clean');
 var sourcemaps  = require('gulp-sourcemaps');
-var watch       = require('gulp-watch');
 //var rename      = require('gulp-rename');
 var growserify  = require('gulp-browserify');
 //var browserify  = require('browserify');
@@ -21,7 +20,7 @@ var jsBasePath     = devBasePath + 'js/';
 var assetsFiles  = assetsBasePath + '**/*.*';
 var htmlFiles    = devBasePath + 'index.html';
 var cssFiles     = cssBasePath + '*.css';
-var jsFiles      = jsBasePath + 'main.js';
+var jsFiles      = jsBasePath + 'client/main.js';
 
 var prodDest = 'prod/';
 
@@ -43,11 +42,8 @@ gulp.task('browserify', function() {
         .pipe(gulp.dest(prodJs));
 });
 
-gulp.task('watch-js', ['browserify'], function() {
-    return watch(jsFiles, function(event) {
-        console.log(event.path);
-        gulp.start('browserify');
-    });
+gulp.task('watch-js', function() {
+    return gulp.watch(jsFiles, ['browserify']);
 });
 
 gulp.task('copy-css', function() {
@@ -55,11 +51,8 @@ gulp.task('copy-css', function() {
         .pipe(gulp.dest(prodCss));
 });
 
-gulp.task('watch-css', ['copy-css'], function() {
-    return watch(cssFiles, function(event) {
-        console.log(event.path);
-        gulp.start('copy-css');
-    });
+gulp.task('watch-css', function() {
+    return gulp.watch(cssFiles, ['copy-css']);
 });
 
 gulp.task('copy-lib', function() {
@@ -67,11 +60,8 @@ gulp.task('copy-lib', function() {
         .pipe(gulp.dest(prodJs));
 });
 
-gulp.task('watch-lib', ['copy-lib'], function() {
-    return watch(jsBasePath + '/phaser.min.js', function(event) {
-        console.log(event.path);
-        gulp.start('copy-lib');
-    });
+gulp.task('watch-lib', function() {
+    return gulp.watch(jsBasePath + '/phaser.min.js', ['copy-lib']);
 });
 
 gulp.task('copy-assets', function() {
@@ -79,11 +69,8 @@ gulp.task('copy-assets', function() {
         .pipe(gulp.dest(prodAssets));
 });
 
-gulp.task('watch-assets', ['copy-assets'], function() {
-    return watch(assetsFiles, function(event) {
-        console.log(event.path);
-        gulp.start('copy-assets');
-    });
+gulp.task('watch-assets', function() {
+    return gulp.watch(assetsFiles, ['copy-assets']);
 });
 
 gulp.task('copy-html', function() {
@@ -92,10 +79,7 @@ gulp.task('copy-html', function() {
 });
 
 gulp.task('watch-html', ['copy-html'], function() {
-    return watch(htmlFiles, function(event) {
-        console.log(event.path);
-        gulp.start('copy-html');
-    });
+    return gulp.watch(htmlFiles, [ 'copy-html' ]);
 });
 
 gulp.task('clean', function() {
