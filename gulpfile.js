@@ -43,7 +43,7 @@ gulp.task('browserify', function() {
 });
 
 gulp.task('copy-lib', function() {
-    return gulp.src(jsBasePath + 'phaser.min.js')
+    return gulp.src(jsBasePath + 'phaser*.js')
         .pipe(gulp.dest(prodJs));
 });
 
