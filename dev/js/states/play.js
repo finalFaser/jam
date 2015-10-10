@@ -1,4 +1,5 @@
 var ProjectilePool = require('..\\common\\ProjectilePool');
+var Explosion = require('..\\common\\Explosion');
 
 // Define constants
 var SHOT_DELAY = 100; // milliseconds (10 bullets/second)
@@ -8,6 +9,8 @@ module.exports = {
     create: function(){
         this.lastBulletShotAt = 0;
         this.bulletPool = new ProjectilePool(this.game);
+        this.bulletPool2 = new ProjectilePool(this.game);
+        this.explosion = new Explosion(this.game, 0, 0);
 
         this._barbarian = this.add.sprite(300, 300, 'barbarian');
         this._barbarian.anchor.set(0.5, 0.5);
@@ -32,7 +35,19 @@ module.exports = {
             this.lastBulletShotAt = this.game.time.now;
 
             this.bulletPool.shoot(0,0);
+            this.bulletPool2.shoot(600,600);
         }
+        // Check if bullets have collided with the ground
+        this.game.physics.arcade.collide(this.bulletPool.bulletPool, this.bulletPool2.bulletPool, function(bullet, bullet2) {
+            // Create an explosion
+            //this.getExplosion(bullet.x, bullet.y);
+
+            this.explosion.boom(bullet.x, bullet.y);
+
+            // Kill the bullet
+            bullet.kill();
+            bullet2.kill();
+        }, null, this);
 
         this._barbarian.body.velocity.x = 0;
         this._barbarian.body.velocity.y = 0;
