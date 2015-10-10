@@ -20,7 +20,7 @@ var jsBasePath     = devBasePath + 'js/';
 var assetsFiles  = assetsBasePath + '**/*.*';
 var htmlFiles    = devBasePath + 'index.html';
 var cssFiles     = cssBasePath + '*.css';
-var jsFiles      = jsBasePath + 'client/main.js';
+var jsFiles      = jsBasePath + 'main.js';
 
 var prodDest = 'prod/';
 
@@ -88,5 +88,5 @@ gulp.task('clean', function() {
 });
 
 gulp.task('default', function() {
-    runSequence('clean', ['watch-html', 'watch-assets', 'watch-css', 'watch-lib', 'watch-js']);
+    runSequence('clean', 'copy-html', 'copy-assets', 'copy-lib', 'copy-css', ['watch-html', 'watch-assets', 'watch-css', 'watch-lib', 'watch-js']);
 });
