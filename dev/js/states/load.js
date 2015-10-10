@@ -17,9 +17,12 @@ module.exports = {
     preload: function () {
         this.loadingLabel();
         //Add here all the assets that you need to game.load
+
+
+        this.load.image('BalaPotassio', 'assets/bullet.png');//asynchronous
     },
 
     create: function () {
-        game.state.start('menu');
+        game.state.start('play'); //TODO: do the menu
     }
 };

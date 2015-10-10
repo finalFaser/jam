@@ -20,7 +20,7 @@ var jsBasePath     = devBasePath + 'js/';
 var assetsFiles  = assetsBasePath + '**/*.*';
 var htmlFiles    = devBasePath + 'index.html';
 var cssFiles     = cssBasePath + '*.css';
-var jsFiles      = jsBasePath + 'main.js';
+var jsFiles      = jsBasePath + '**/!(phaser*).js';
 
 var prodDest = 'prod/';
 
