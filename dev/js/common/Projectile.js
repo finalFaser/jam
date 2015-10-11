@@ -7,7 +7,7 @@ var BULLET_SPEED = 500; // pixels/second
 var Projectile = function(game, x, y) {
     Phaser.Sprite.call(this, game, x, y, 'BalaPotassio');
 
-    this.game.physics.p2.enable(this, true);
+    this.game.physics.p2.enable(this, debug);
     this.body.setCircle(this.width/2);
     this.body.fixedRotation = true;
 

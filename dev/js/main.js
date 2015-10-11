@@ -13,3 +13,5 @@ game.state.add('menu', require('./states/menu.js'));
 game.state.add('boot', require('./states/boot.js'));
 
 game.state.start('boot');
+
+window.debug = false;

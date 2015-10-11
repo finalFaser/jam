@@ -15,17 +15,17 @@ module.exports = {
         this.game.physics.p2.setImpactEvents(true);
         this.bulletCollisionGroup = game.physics.p2.createCollisionGroup();
         this.beamCollisionGroup = game.physics.p2.createCollisionGroup();
-        this.game.physics.p2.updateBoundsCollisionGroup();
+        //this.game.physics.p2.updateBoundsCollisionGroup();
         this.bulletPool = new ProjectilePool(this.game, this.bulletCollisionGroup, [this.bulletCollisionGroup, this.beamCollisionGroup]);
         this.bulletPool2 = new ProjectilePool(this.game, this.bulletCollisionGroup, [this.bulletCollisionGroup, this.beamCollisionGroup]);
 
-        this.beam = this.add.existing(new Beam(this.game, this.beamCollisionGroup));
+        this.beam = this.add.existing(new Beam(this.game, this.beamCollisionGroup, this.bulletCollisionGroup));
         this.beam.body.collides(this.bulletCollisionGroup, function(obj1, obj2){
             // Create an explosion
             this.explosion.boom(obj2.x, obj2.y);
 
             // Kill the bullet
-            //obj2.kill();
+            obj2.sprite.kill();
         }, this);
 
 

@@ -10,42 +10,39 @@ var FIRE_TIME = 100;//ms
 
 var Beam = function(game, myCollisionGroup) {
     Phaser.Sprite.call(this, game, 0, 0, 'beam');
+    this.anchor.set(0.5, 0.5);//BECAUSE P2JS this is always true
+    this.scale.setTo(0, 1);
 
-    this.game.physics.p2.enable(this, true);
-    this.body.fixedRotation = true;
-    this.myCollisionGroup = myCollisionGroup;
-    this.body.setRectangleFromSprite(this);//(this.width, this.height);
-    this.body.setCollisionGroup(myCollisionGroup);
-
-    this.alphaTween = this.game.add.tween(this).to({alpha: 0}, FADE_TIME, null, false, TOTAL - FADE_TIME);
+    this.alphaTween = this.game.add.tween(this).to({alpha: 0.1}, FADE_TIME, null, false, TOTAL - FADE_TIME);
     this.alphaTween.onComplete.add(function(){
         this.kill();
     }, this);
     this.sizeTween = this.game.add.tween(this).to({width: MAX_LENGTH}, TOTAL - FADE_TIME);
     this.glowTween = this.game.add.tween(this.scale).to({y: 2}, 200, null, null, 50, -1, true);
+
+
+    this.game.physics.p2.enable(this, debug);
+
     this.velocityTween = this.game.add.tween(this.body.velocity).to({
         x : 0,// Math.cos(this.rotation) * BEAM_SPEED_END,
         y : 0 //Math.sin(this.rotation) * BEAM_SPEED_END
     }, TOTAL-FIRE_TIME,  null, false, 0);
 
-    this.anchor.set(0, 0.5);
     this.kill();
 
-    this.scale.setTo(0, 1);
+    this.body.fixedRotation = true;
+    this.myCollisionGroup = myCollisionGroup;
+    this.body.setRectangleFromSprite(this);
+    this.body.setCollisionGroup(myCollisionGroup);
 }
 
 Beam.prototype = Object.create(Phaser.Sprite.prototype);
 
 Beam.prototype.update = function() {
-   Phaser.Sprite.prototype.update.call(this);
+    Phaser.Sprite.prototype.update.call(this);
 
-   this.body.setRectangleFromSprite(this);
-   //this.body.setPosition(this.position);
-   this.body.reset(this.x, this.y);
-   this.body.setCollisionGroup(this.myCollisionGroup);
-
-   //game.debug.bodyInfo(this, 32, 32);
-   //game.debug.body(this);
+    this.body.setRectangleFromSprite(this);
+    this.body.setCollisionGroup(this.myCollisionGroup);
 };
 
 
@@ -58,7 +55,8 @@ Beam.prototype.shoot = function(x,y) {
     // Phaser takes care of this for me by setting this flag
     // but you can do it yourself by killing the bullet if
     // its x,y coordinates are outside of the world.
-    //this.checkWorldBounds = true;
+    this.body.collideWorldBounds = false;//p2
+    this.checkWorldBounds = false;//arcade
     //this.outOfBoundsKill = true;
 
     // Set the bullet position to the gun position.
@@ -73,7 +71,6 @@ Beam.prototype.shoot = function(x,y) {
     // All this function does is calculate the angle using
     // Math.atan2(yPointer-yGun, xPointer-xGun)
     this.rotation = this.game.physics.arcade.angleToPointer(this);
-    this.body.rotation = this.rotation;
 
     game.time.events.add(Phaser.Timer.QUARTER, function(){
         this.body.velocity.x = Math.cos(this.rotation) * BEAM_SPEED_START;
