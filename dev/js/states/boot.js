@@ -12,7 +12,7 @@ module.exports = {
     },
 
     create: function () {
-        game.plugins.add(Phaser.Plugin.Inspector);
+        //game.plugins.add(Phaser.Plugin.Inspector);
 
         game.state.start('load');
     }

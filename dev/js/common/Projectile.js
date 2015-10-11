@@ -7,7 +7,11 @@ var BULLET_SPEED = 500; // pixels/second
 var Projectile = function(game, x, y) {
     Phaser.Sprite.call(this, game, x, y, 'BalaPotassio');
 
-    this.game.physics.enable(this, Phaser.Physics.ARCADE);
+    this.game.physics.p2.enable(this, true);
+    this.body.setCircle(this.width/2);
+    this.body.fixedRotation = true;
+
+
     this.anchor.set(0.5, 0.5);
     this.kill();
 }
@@ -27,7 +31,8 @@ Projectile.prototype.shootBullet = function(x,y) {
     // Phaser takes care of this for me by setting this flag
     // but you can do it yourself by killing the bullet if
     // its x,y coordinates are outside of the world.
-    this.checkWorldBounds = true;
+    this.body.collideWorldBounds = false;//p2
+    this.checkWorldBounds = true;//arcade
     this.outOfBoundsKill = true;
 
     // Set the bullet position to the gun position.

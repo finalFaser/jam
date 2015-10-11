@@ -3,18 +3,34 @@ var Explosion = require('../common/Explosion');
 var Beam = require('../common/Beam');
 
 // Define constants
-var SHOT_DELAY = 200; // milliseconds (5 bullets/second)
 var LAZER_DELAY = 2500; //ms (0.5/sec)
 
 module.exports = {
     create: function(){
-        this.lastBulletShotAt = 0;
         this.lastLazerShotAt = 0;
 
-        this.bulletPool = new ProjectilePool(this.game);
-        this.bulletPool2 = new ProjectilePool(this.game);
         this.explosion = new Explosion(this.game, 0, 0);
-        this.beam = this.add.existing(new Beam(this.game));
+
+        this.game.physics.startSystem(Phaser.Physics.P2JS);
+        this.game.physics.p2.setImpactEvents(true);
+        this.bulletCollisionGroup = game.physics.p2.createCollisionGroup();
+        this.beamCollisionGroup = game.physics.p2.createCollisionGroup();
+        this.game.physics.p2.updateBoundsCollisionGroup();
+        this.bulletPool = new ProjectilePool(this.game, this.bulletCollisionGroup, [this.bulletCollisionGroup, this.beamCollisionGroup]);
+        this.bulletPool2 = new ProjectilePool(this.game, this.bulletCollisionGroup, [this.bulletCollisionGroup, this.beamCollisionGroup]);
+
+        this.beam = this.add.existing(new Beam(this.game, this.beamCollisionGroup));
+        this.beam.body.collides(this.bulletCollisionGroup, function(obj1, obj2){
+            // Create an explosion
+            this.explosion.boom(obj2.x, obj2.y);
+
+            // Kill the bullet
+            //obj2.kill();
+        }, this);
+
+
+
+
 
         this._barbarian = this.add.sprite(300, 300, 'barbarian');
         this._barbarian.anchor.set(0.5, 0.5);
@@ -41,7 +57,7 @@ module.exports = {
             }
         }
         // Check if bullets have collided
-        this.game.physics.arcade.collide(this.bulletPool.bulletPool, this.bulletPool2.bulletPool, function(bullet, bullet2) {
+ /*       this.game.physics.arcade.collide(this.bulletPool.bulletPool, this.bulletPool2.bulletPool, function(bullet, bullet2) {
             // Create an explosion
             this.explosion.boom(bullet.x, bullet.y);
 
@@ -51,15 +67,15 @@ module.exports = {
         }, null, this);
 
 
-        // Check if bullets have collided
-        this.game.physics.arcade.collide(this.bulletPool.bulletPool, this.beam, function(bullet, beam) {
+        // Check if bullets have collided with beams
+        this.game.physics.arcade.collide(this.bulletPool2.bulletPool, this.beam, function(beam, bullet) {
             // Create an explosion
             this.explosion.boom(bullet.x, bullet.y);
 
             // Kill the bullet
             bullet.kill();
         }, null, this);
-
+*/
 
 
         this._barbarian.body.velocity.x = 0;
@@ -81,8 +97,13 @@ module.exports = {
             //others have magic mike
             //we have magic numbers
             if (this._isAttacking === 8) {
-                this.bulletPool.shoot(this._barbarian.x + 60, this._barbarian.y - 15);
-                this.bulletPool2.shoot(600,600);
+                //this.bulletPool.shoot(this._barbarian.x + 60, this._barbarian.y - 15);
+                this.bulletPool2.shoot(600, 600);
+            }
+
+            if (this.game.time.now - this.lastLazerShotAt > LAZER_DELAY) {
+                this.lastLazerShotAt = this.game.time.now;
+                this.beam.shoot(this._barbarian.x, this._barbarian.y);
             }
         }
 

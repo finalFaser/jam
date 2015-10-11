@@ -1,6 +1,6 @@
 "use strict";
 
-window.game = new Phaser.Game(600, 600, Phaser.AUTO);
+window.game = new Phaser.Game(1200, 600, Phaser.AUTO);
 
 game.globals = {
     //Add variables here that you want to access globally

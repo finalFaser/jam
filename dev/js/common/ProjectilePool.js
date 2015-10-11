@@ -5,11 +5,19 @@ var Projectile = require('..\\common\\Projectile');
 
 var NUMBER_OF_BULLETS = 50;
 
-var ProjectilePool = function(game){
+var ProjectilePool = function(game, bulletCollisionGroup, collisionArr){
     this.bulletPool = game.add.group();
     this.iBullet = 0;
+
+    this.bulletPool.enableBody = true;
+    this.bulletPool.physicsBodyType = Phaser.Physics.P2JS;
+
     for(var i = 0; i < NUMBER_OF_BULLETS; i++) {
-        this.bulletPool.add(new Projectile(game, 0, 0));
+        var tempP = new Projectile(game, 0, 0);
+
+        tempP.body.setCollisionGroup(bulletCollisionGroup);
+        tempP.body.collides(collisionArr);
+        this.bulletPool.add(tempP);
     }
 };
 

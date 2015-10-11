@@ -8,27 +8,25 @@ var FADE_TIME = 600; //ms
 var BEAM_SPEED_START = 100;
 var FIRE_TIME = 100;//ms
 
-var Beam = function(game, x, y) {
-    Phaser.Sprite.call(this, game, x?x:200, y?y:200, 'beam');
+var Beam = function(game, myCollisionGroup) {
+    Phaser.Sprite.call(this, game, 0, 0, 'beam');
+
+    this.game.physics.p2.enable(this, true);
+    this.body.fixedRotation = true;
+    this.myCollisionGroup = myCollisionGroup;
+    this.body.setRectangleFromSprite(this);//(this.width, this.height);
+    this.body.setCollisionGroup(myCollisionGroup);
 
     this.alphaTween = this.game.add.tween(this).to({alpha: 0}, FADE_TIME, null, false, TOTAL - FADE_TIME);
     this.alphaTween.onComplete.add(function(){
         this.kill();
     }, this);
-    this.sizeTween = this.game.add.tween(this.scale).to({x: MAX_LENGTH}, TOTAL - FADE_TIME);
-
+    this.sizeTween = this.game.add.tween(this).to({width: MAX_LENGTH}, TOTAL - FADE_TIME);
     this.glowTween = this.game.add.tween(this.scale).to({y: 2}, 200, null, null, 50, -1, true);
-
-    this.game.physics.enable(this, Phaser.Physics.ARCADE);
     this.velocityTween = this.game.add.tween(this.body.velocity).to({
         x : 0,// Math.cos(this.rotation) * BEAM_SPEED_END,
         y : 0 //Math.sin(this.rotation) * BEAM_SPEED_END
     }, TOTAL-FIRE_TIME,  null, false, 0);
-
-
-
-    //this.velocityTween.onStart.add(alterVelocity, this);
-    //this.velocityTween.onLoop.add(alterVelocity, this);
 
     this.anchor.set(0, 0.5);
     this.kill();
@@ -38,6 +36,17 @@ var Beam = function(game, x, y) {
 
 Beam.prototype = Object.create(Phaser.Sprite.prototype);
 
+Beam.prototype.update = function() {
+   Phaser.Sprite.prototype.update.call(this);
+
+   this.body.setRectangleFromSprite(this);
+   //this.body.setPosition(this.position);
+   this.body.reset(this.x, this.y);
+   this.body.setCollisionGroup(this.myCollisionGroup);
+
+   //game.debug.bodyInfo(this, 32, 32);
+   //game.debug.body(this);
+};
 
 
 Beam.prototype.shoot = function(x,y) {
@@ -64,13 +73,12 @@ Beam.prototype.shoot = function(x,y) {
     // All this function does is calculate the angle using
     // Math.atan2(yPointer-yGun, xPointer-xGun)
     this.rotation = this.game.physics.arcade.angleToPointer(this);
-    var that = this;
-    //setTimeout( , FIRE_TIME);
+    this.body.rotation = this.rotation;
 
     game.time.events.add(Phaser.Timer.QUARTER, function(){
-        that.body.velocity.x = Math.cos(this.rotation) * BEAM_SPEED_START;
-        that.body.velocity.y = Math.sin(this.rotation) * BEAM_SPEED_START;
-        that.velocityTween.start();
+        this.body.velocity.x = Math.cos(this.rotation) * BEAM_SPEED_START;
+        this.body.velocity.y = Math.sin(this.rotation) * BEAM_SPEED_START;
+        this.velocityTween.start();
     }, this).autoDestroy = true;
 
 
