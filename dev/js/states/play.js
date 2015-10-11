@@ -4,7 +4,7 @@ var Beam = require('../common/Beam');
 
 // Define constants
 var SHOT_DELAY = 200; // milliseconds (5 bullets/second)
-var LAZER_DELAY = 3000; //ms (0.5/sec)
+var LAZER_DELAY = 2500; //ms (0.5/sec)
 
 module.exports = {
     create: function(){

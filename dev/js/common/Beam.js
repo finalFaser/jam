@@ -17,8 +17,9 @@ var Beam = function(game, x, y) {
     }, this);
     this.sizeTween = this.game.add.tween(this.scale).to({x: MAX_LENGTH}, TOTAL - FADE_TIME);
 
-    this.game.physics.enable(this, Phaser.Physics.ARCADE);
+    this.glowTween = this.game.add.tween(this.scale).to({y: 2}, 200, null, null, 50, -1, true);
 
+    this.game.physics.enable(this, Phaser.Physics.ARCADE);
     this.velocityTween = this.game.add.tween(this.body.velocity).to({
         x : 0,// Math.cos(this.rotation) * BEAM_SPEED_END,
         y : 0 //Math.sin(this.rotation) * BEAM_SPEED_END
@@ -58,7 +59,7 @@ Beam.prototype.shoot = function(x,y) {
 
     this.sizeTween.start();
     this.alphaTween.start();
-
+    this.glowTween.start();
     // Aim the gun at the pointer.
     // All this function does is calculate the angle using
     // Math.atan2(yPointer-yGun, xPointer-xGun)
