@@ -11,6 +11,19 @@ module.exports = {
         this.background = this.add.sprite(0, 0, 'background');
         this.themeSound = this.game.add.audio('themeSound', 0.05, true).play();
 
+
+
+        this._scientist2 = this.add.sprite(500, 500, 'scientist2');
+        this._scientist2.scale= {x:2, y:2};
+        this._scientist2.anchor.set(0.5, 0.5);
+
+        this._scientist2.animations.add('walk', [1, 2]);
+        this._scientist2.animations.add('run', [11, 12, 13, 14]);
+        this._scientist2.animations.add('attack', [19, 20, 21, 30, 31, 32]);
+
+        this.game.physics.arcade.enable(this._scientist2);
+
+
         this._scientist = this.add.sprite(300, 300, 'scientist');
         this._scientist.scale= {x:2, y:2};
         this._scientist.anchor.set(0.5, 0.5);
@@ -20,6 +33,7 @@ module.exports = {
         this._scientist.animations.add('attack', [19, 20, 21, 31, 32]);
 
         this.game.physics.arcade.enable(this._scientist);
+
 
         this._cursors = this.game.input.keyboard.createCursorKeys();
         this._shift = this.game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
@@ -46,6 +60,11 @@ module.exports = {
             // Kill the bullet
             obj2.sprite.kill();
         }, this);
+
+        this.wKey = game.input.keyboard.addKey(Phaser.Keyboard.W);
+        this.aKey = game.input.keyboard.addKey(Phaser.Keyboard.A);
+        this.dKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
+        this.sKey = game.input.keyboard.addKey(Phaser.Keyboard.S);
     },
     update: function(){
 
@@ -60,6 +79,8 @@ module.exports = {
 
         this._scientist.body.velocity.x = 0;
         this._scientist.body.velocity.y = 0;
+        this._scientist2.body.velocity.x = 0;
+        this._scientist2.body.velocity.y = 0;
 
         if (this._isAttacking) {
             //others have magic mike
@@ -85,7 +106,16 @@ module.exports = {
 
             if (this.game.time.now - this.lastLazerShotAt > LAZER_DELAY) {
                 this.lastLazerShotAt = this.game.time.now;
-                this.beam.shoot(this._scientist.x, this._scientist.y);
+
+                //Move origin more towards the source
+                var myPoint = new Phaser.Point();
+                myPoint.x = this._scientist.x;
+                myPoint.y = this._scientist.y;
+                myPoint.subtract(game.input.position.x, game.input.position.y);
+                myPoint.normalize();
+                myPoint.setMagnitude(25);
+
+                this.beam.shoot(this._scientist.x + myPoint.x, this._scientist.y + myPoint.y);
             }
         }
 
@@ -101,6 +131,27 @@ module.exports = {
             this._scientist.body.velocity.y = speedModifier * -200;
         } else if (this._cursors.down.isDown) {
             this._scientist.body.velocity.y = speedModifier * 200;
+        }
+
+
+        if (this.wKey.isDown || this.aKey.isDown || this.sKey.isDown || this.dKey.isDown) {
+            this._scientist2.animations.play(this._shift.isDown ? 'run' : 'walk', 30, true);
+        } else {
+            this._scientist2.animations.stop('walk');
+            this._scientist2.animations.stop('run');
+            this._scientist2.frame = 0;
+        }
+
+        if(this.aKey.isDown){
+            this._scientist2.body.velocity.x = speedModifier * -200;
+        } else if(this.dKey.isDown){
+            this._scientist2.body.velocity.x = speedModifier * 200;
+        }
+
+        if(this.wKey.isDown){
+            this._scientist2.body.velocity.y = speedModifier * -200;
+        } else if(this.sKey.isDown){
+            this._scientist2.body.velocity.y = speedModifier * 200;
         }
     }
 };

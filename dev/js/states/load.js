@@ -23,6 +23,7 @@ module.exports = {
         this.load.spritesheet('explosion', 'assets/explosion.png', 128, 128);//asynchronous
         this.load.spritesheet('barbarian', 'assets/barbarian.png', 144, 144);//asynchronous
         this.load.spritesheet('scientist', 'assets/scientist.png', 144, 144);//asynchronous
+        this.load.spritesheet('scientist2', 'assets/scientist2.png', 144, 144);//asynchronous
         this.load.image('beam', 'assets/beam.png');//asynchronous
         this.load.image('background', 'assets/BG (2).png');//asynchronous
 
