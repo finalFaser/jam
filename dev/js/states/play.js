@@ -37,7 +37,7 @@ module.exports = {
 
 
 
-        this._barbarian = this.add.sprite(300, 300, 'barbarian');
+        this._barbarian = this.add.sprite(300, 300, 'scientist');
         this._barbarian.anchor.set(0.5, 0.5);
 
         this._barbarian.animations.add('walk', [0, 1, 2, 3, 4, 5, 6, 7, 8]);
@@ -81,13 +81,13 @@ module.exports = {
             //others have magic mike
             //we have magic numbers
             if (this._isAttacking === 8) {
-                this.bulletPool.shoot(this._barbarian.x + 60, this._barbarian.y - 15);
+                //this.bulletPool.shoot(this._barbarian.x + 60, this._barbarian.y - 15);
                 this.bulletPool2.shoot(600, 600);
             }
 
             if (this.game.time.now - this.lastLazerShotAt > LAZER_DELAY) {
                 this.lastLazerShotAt = this.game.time.now;
-                //this.beam.shoot(this._barbarian.x, this._barbarian.y);
+                this.beam.shoot(this._barbarian.x, this._barbarian.y);
             }
         }
 
