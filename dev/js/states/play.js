@@ -10,9 +10,7 @@ module.exports = {
 
         this.background = this.add.sprite(0, 0, 'background');
 
-        this.themeSound = this.game.add.audio('themeSound').play();
-        this.themeSound.loop = true;
-        this.themeSound.volume = 0.05;
+        this.themeSound = this.game.add.audio('themeSound', 0.05, true).play();
 
         this.lastLazerShotAt = 0;
 
@@ -63,27 +61,6 @@ module.exports = {
                 this._isAttacking = 15;
             }
         }
-        // Check if bullets have collided
- /*       this.game.physics.arcade.collide(this.bulletPool.bulletPool, this.bulletPool2.bulletPool, function(bullet, bullet2) {
-            // Create an explosion
-            this.explosion.boom(bullet.x, bullet.y);
-
-            // Kill the bullet
-            bullet.kill();
-            bullet2.kill();
-        }, null, this);
-
-
-        // Check if bullets have collided with beams
-        this.game.physics.arcade.collide(this.bulletPool2.bulletPool, this.beam, function(beam, bullet) {
-            // Create an explosion
-            this.explosion.boom(bullet.x, bullet.y);
-
-            // Kill the bullet
-            bullet.kill();
-        }, null, this);
-*/
-
 
         this._barbarian.body.velocity.x = 0;
         this._barbarian.body.velocity.y = 0;
@@ -104,13 +81,13 @@ module.exports = {
             //others have magic mike
             //we have magic numbers
             if (this._isAttacking === 8) {
-                //this.bulletPool.shoot(this._barbarian.x + 60, this._barbarian.y - 15);
+                this.bulletPool.shoot(this._barbarian.x + 60, this._barbarian.y - 15);
                 this.bulletPool2.shoot(600, 600);
             }
 
             if (this.game.time.now - this.lastLazerShotAt > LAZER_DELAY) {
                 this.lastLazerShotAt = this.game.time.now;
-                this.beam.shoot(this._barbarian.x, this._barbarian.y);
+                //this.beam.shoot(this._barbarian.x, this._barbarian.y);
             }
         }
 
