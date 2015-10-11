@@ -1,7 +1,6 @@
-var ProjectilePool = require('..\\common\\ProjectilePool');
-var Explosion = require('..\\common\\Explosion');
-var Beam = require('..\\common\\Beam');
-
+var ProjectilePool = require('../common/ProjectilePool');
+var Explosion = require('../common/Explosion');
+var Beam = require('../common/Beam');
 
 // Define constants
 var SHOT_DELAY = 200; // milliseconds (5 bullets/second)
@@ -22,12 +21,14 @@ module.exports = {
 
         this._barbarian.animations.add('walk', [0, 1, 2, 3, 4, 5, 6, 7, 8]);
         this._barbarian.animations.add('run', [11, 12, 13, 14, 15, 16, 17, 18]);
-        this._barbarian.animations.add('jump', [29, 30, 31, 32]);
+        this._barbarian.animations.add('attack', [19, 20, 21]);
 
         this.game.physics.arcade.enable(this._barbarian);
 
         this._cursors = this.game.input.keyboard.createCursorKeys();
         this._shift = this.game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
+
+        this._isAttacking = 0;
     },
     update: function(){
 
@@ -35,20 +36,10 @@ module.exports = {
 
         // Shoot a bullet
         if (this.game.input.activePointer.isDown) {
-            // Enforce a short delay between shots by recording
-            // the time that each bullet is shot and testing if
-            // the amount of time since the last shot is more than
-            // the required delay.
-            if (this.game.time.now - this.lastBulletShotAt > SHOT_DELAY){
-                this.lastBulletShotAt = this.game.time.now;
-
-                this.bulletPool.shoot(this._barbarian.x,this._barbarian.y);
-                this.bulletPool2.shoot(600,600);
-            }
-
-            if (this.game.time.now - this.lastLazerShotAt > LAZER_DELAY) {
-                this.lastLazerShotAt = this.game.time.now;
-                this.beam.shoot(this._barbarian.x,this._barbarian.y);
+            if (!this._isAttacking) {
+                //others have magic mike
+                //we have magic numbers
+                this._isAttacking = 15;
             }
         }
         // Check if bullets have collided with the ground
@@ -66,11 +57,25 @@ module.exports = {
         this._barbarian.body.velocity.x = 0;
         this._barbarian.body.velocity.y = 0;
 
-        if (this._cursors.left.isDown || this._cursors.right.isDown || this._cursors.up.isDown || this._cursors.down.isDown) {
+        if (this._isAttacking) {
+            //others have magic mike
+            //we have magic numbers
+            this._barbarian.animations.play('attack', 10);
+        } else if (this._cursors.left.isDown || this._cursors.right.isDown || this._cursors.up.isDown || this._cursors.down.isDown) {
             this._barbarian.animations.play(this._shift.isDown ? 'run' : 'walk', 30, true);
         } else {
             this._barbarian.animations.stop('walk');
             this._barbarian.animations.stop('run');
+            this._barbarian.frame = 0;
+        }
+
+        if (this._isAttacking && this._isAttacking--) {
+            //others have magic mike
+            //we have magic numbers
+            if (this._isAttacking === 8) {
+                this.bulletPool.shoot(this._barbarian.x + 60, this._barbarian.y - 15);
+                this.bulletPool2.shoot(600,600);
+            }
         }
 
         var speedModifier = this._shift.isDown ? 2 : 1;
