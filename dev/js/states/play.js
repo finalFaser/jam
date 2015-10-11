@@ -11,6 +11,7 @@ module.exports = {
         this.background = this.add.sprite(0, 0, 'background');
 
         this.themeSound = this.game.add.audio('themeSound').play();
+        this.themeSound.loop = true;
         this.themeSound.volume = 0.05;
 
         this.lastLazerShotAt = 0;
