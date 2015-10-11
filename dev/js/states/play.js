@@ -32,8 +32,6 @@ module.exports = {
     },
     update: function(){
 
-        //this.beam.update();
-
         // Shoot a bullet
         if (this.game.input.activePointer.isDown) {
             if (!this._isAttacking) {
@@ -42,17 +40,27 @@ module.exports = {
                 this._isAttacking = 15;
             }
         }
-        // Check if bullets have collided with the ground
+        // Check if bullets have collided
         this.game.physics.arcade.collide(this.bulletPool.bulletPool, this.bulletPool2.bulletPool, function(bullet, bullet2) {
             // Create an explosion
-            //this.getExplosion(bullet.x, bullet.y);
-
             this.explosion.boom(bullet.x, bullet.y);
 
             // Kill the bullet
             bullet.kill();
             bullet2.kill();
         }, null, this);
+
+
+        // Check if bullets have collided
+        this.game.physics.arcade.collide(this.bulletPool.bulletPool, this.beam, function(bullet, beam) {
+            // Create an explosion
+            this.explosion.boom(bullet.x, bullet.y);
+
+            // Kill the bullet
+            bullet.kill();
+        }, null, this);
+
+
 
         this._barbarian.body.velocity.x = 0;
         this._barbarian.body.velocity.y = 0;
