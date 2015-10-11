@@ -7,6 +7,12 @@ var LAZER_DELAY = 2500; //ms (0.5/sec)
 
 module.exports = {
     create: function(){
+
+        this.background = this.add.sprite(0, 0, 'background');
+
+        this.themeSound = this.game.add.audio('themeSound').play();
+        this.themeSound.volume = 0.05;
+
         this.lastLazerShotAt = 0;
 
         this.explosion = new Explosion(this.game, 0, 0);
