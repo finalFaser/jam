@@ -3,9 +3,9 @@
  */
 
 var MAX_LENGTH = 850; // pixels
-var TOTAL = 800; //ms
-var FADE_TIME = 600; //ms
-var BEAM_SPEED_START = 100;
+var TOTAL = 2000; //ms
+var FADE_TIME = 200; //ms
+var BEAM_SPEED_START = 1800;
 var FIRE_TIME = 100;//ms
 
 var Beam = function(game, myCollisionGroup) {
@@ -17,16 +17,23 @@ var Beam = function(game, myCollisionGroup) {
     this.alphaTween.onComplete.add(function(){
         this.kill();
     }, this);
-    this.sizeTween = this.game.add.tween(this).to({width: MAX_LENGTH}, TOTAL - FADE_TIME);
+
+    this.sizeTween = this.game.add.tween(this).to({width: MAX_LENGTH}, TOTAL - FADE_TIME, 'Expo');
+    this.sizeTween.onComplete.add(function(){
+        this.body.velocity.x = 0;
+        this.body.velocity.y = 0;
+    }, this);
     this.glowTween = this.game.add.tween(this.scale).to({y: 2}, 200, null, null, 50, -1, true);
 
 
     this.game.physics.p2.enable(this, debug);
 
+    this.body.velocity.x = Math.cos(this.rotation) * BEAM_SPEED_START;
+    this.body.velocity.y = Math.sin(this.rotation) * BEAM_SPEED_START;
     this.velocityTween = this.game.add.tween(this.body.velocity).to({
         x : 0,// Math.cos(this.rotation) * BEAM_SPEED_END,
         y : 0 //Math.sin(this.rotation) * BEAM_SPEED_END
-    }, TOTAL-FIRE_TIME,  null, false, 0);
+    }, TOTAL - FADE_TIME,  'Expo', false, 0);
 
     this.kill();
 
@@ -35,6 +42,8 @@ var Beam = function(game, myCollisionGroup) {
     this.body.setRectangleFromSprite(this);
     this.body.setCollisionGroup(myCollisionGroup);
     this.body.kinematic = true;
+    //this.body.damping= 0;
+    //this.body.mass= 0.1;
 }
 
 Beam.prototype = Object.create(Phaser.Sprite.prototype);
@@ -74,11 +83,14 @@ Beam.prototype.shoot = function(x,y) {
     // Math.atan2(yPointer-yGun, xPointer-xGun)
     this.rotation = this.game.physics.arcade.angleToPointer(this);
 
-    game.time.events.add(Phaser.Timer.QUARTER, function(){
-        this.body.velocity.x = Math.cos(this.rotation) * BEAM_SPEED_START;
-        this.body.velocity.y = Math.sin(this.rotation) * BEAM_SPEED_START;
-        this.velocityTween.start();
-    }, this).autoDestroy = true;
+    this.body.velocity.x = Math.cos(this.rotation) * BEAM_SPEED_START;
+    this.body.velocity.y = Math.sin(this.rotation) * BEAM_SPEED_START;
+    this.velocityTween.start();
+    //game.time.events.add(Phaser.Timer.QUARTER, function(){
+    //    this.body.velocity.x = Math.cos(this.rotation) * BEAM_SPEED_START;
+    //    this.body.velocity.y = Math.sin(this.rotation) * BEAM_SPEED_START;
+    //    this.velocityTween.start();
+    //}, this).autoDestroy = true;
 
 
 };
