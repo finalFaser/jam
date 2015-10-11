@@ -3,7 +3,7 @@
  */
 
 var MAX_LENGTH = 850; // pixels
-var TOTAL = 2000; //ms
+var TOTAL = 800; //ms
 var FADE_TIME = 600; //ms
 var BEAM_SPEED_START = 100;
 var FIRE_TIME = 100;//ms
@@ -34,6 +34,7 @@ var Beam = function(game, myCollisionGroup) {
     this.myCollisionGroup = myCollisionGroup;
     this.body.setRectangleFromSprite(this);
     this.body.setCollisionGroup(myCollisionGroup);
+    this.body.kinematic = true;
 }
 
 Beam.prototype = Object.create(Phaser.Sprite.prototype);
@@ -41,6 +42,7 @@ Beam.prototype = Object.create(Phaser.Sprite.prototype);
 Beam.prototype.update = function() {
     Phaser.Sprite.prototype.update.call(this);
 
+    //this.body.setZeroVelocity();
     this.body.setRectangleFromSprite(this);
     this.body.setCollisionGroup(this.myCollisionGroup);
 };
